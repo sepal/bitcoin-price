@@ -41,7 +41,7 @@ var getJSON = function(url, callback) {
   xhr.send();
 };
 var json;
-getJSON('https://api.coindesk.com/v1/bpi/currentprice/EUR.json',
+getJSON('https://api.coindesk.com/v1/bpi/currentprice.json',
 function(err, data) {
   if (err !== null) {
     alert('Something went wrong: ' + err);
