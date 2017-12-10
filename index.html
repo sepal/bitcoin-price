@@ -9,21 +9,14 @@
 
 <body>
     <form id="calculator">
-        Bitcoin (BTC) amount:
-        <input type="text" id="btc_amount" name="btc_amount">
-        <br> EUR:
-        <span id="btc_result" class="item-result">fetching...</span>
-        (1 BTC =
-        <span id="btc_rate">fetching...</span> EUR)
-        <br> BCash (BCH) amount:
-        <input type="text" id="bch_amount" name="bch_amount">
-        <br> EUR:
-        <span id="bch_result" class="item-result">fetching...</span>
-        (1 BCH =
-        <span id="bch_rate">fetching...</span> EUR)
-        <br>
-        <div class="total">Total EUR:
-            <span id="total">fetching...</span>
+        <div class="add">
+            <select id="add_coin">
+            </select>
+            <input type="text" id="add_amount" name="add_amount">
+            <input type="submit" id="add_submit" value="Add">
+        </div>
+        <div id="total_row" class="total">Total EUR:
+            <span id="total">0</span>
         </div>
     </form>
     <script src="script.js"></script>
