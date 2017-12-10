@@ -39,6 +39,7 @@ getJSON('https://api.coinmarketcap.com/v1/ticker/?convert=EUR&limit=10',
           addRow(json[i], amount);
         }
       }
+      document.getElementById("last_update").innerHTML = Date();
       calculate();
     }
   });
