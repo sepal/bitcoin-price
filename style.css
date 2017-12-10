@@ -7,3 +7,8 @@
 .item-result {
     font-weight: bold;
 }
+
+html {
+    text-align: center;
+    font-size: 1.5em;
+}
