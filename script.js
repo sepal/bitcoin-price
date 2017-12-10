@@ -14,21 +14,15 @@ else {
   document.getElementById('bch_amount').value = bch_amount;
 }
 
-// Recalculate the form when the submit button is triggered.
-function processForm(e) {
-  if (e.preventDefault) {
-    e.preventDefault();
+// Recalculate the form whenever an input changes.
+var inputs = document.getElementsByTagName("input");
+for (var i = 0, len = inputs.length; i < len; i++) {
+  if (inputs[i].attachEvent) {
+    inputs[i].attachEvent("input", calculate);
   }
-  calculate();
-  return false;
-}
-
-var form = document.getElementById('calculator');
-if (form.attachEvent) {
-  form.attachEvent("submit", processForm);
-}
-else {
-  form.addEventListener("submit", processForm);
+  else {
+    inputs[i].addEventListener("input", calculate);
+  }
 }
 
 // Fetch price data from Coindesk API.
