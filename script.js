@@ -64,6 +64,9 @@ function calculate() {
   for (var i = 0, len = json.length; i < len; i++) {
     if (json[i].symbol == "BTC" || json[i].symbol == "BCH") {
       var rate = json[i].price_eur;
+      var rate_id = json[i].symbol.toLowerCase() + "_rate";
+      document.getElementById(rate_id).innerHTML = parseFloat(rate).formatMoney();
+
       var amount_id = json[i].symbol.toLowerCase() + "_amount";
       var result = rate * document.getElementById(amount_id).value;
       var result_id = json[i].symbol.toLowerCase() + "_result";
