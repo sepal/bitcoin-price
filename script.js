@@ -1,13 +1,20 @@
 // Set the amount text field from a query parameter value if present.
 var btc_amount = getParameterByName('btc_amount');
 if (btc_amount === null) {
-  document.getElementById('btc_amount').value = 1;
+  document.getElementById('btc_amount').value = 0;
 }
 else {
   document.getElementById('btc_amount').value = btc_amount;
 }
+var bch_amount = getParameterByName('bch_amount');
+if (bch_amount === null) {
+  document.getElementById('bch_amount').value = 0;
+}
+else {
+  document.getElementById('bch_amount').value = bch_amount;
+}
 
-// Recalculate the form when the submit button is triggered. 
+// Recalculate the form when the submit button is triggered.
 function processForm(e) {
   if (e.preventDefault) {
     e.preventDefault();
@@ -25,11 +32,11 @@ else {
 }
 
 // Fetch price data from Coindesk API.
-var getJSON = function(url, callback) {
+var getJSON = function (url, callback) {
   var xhr = new XMLHttpRequest();
   xhr.open('GET', url, true);
   xhr.responseType = 'json';
-  xhr.onload = function() {
+  xhr.onload = function () {
     var status = xhr.status;
     if (status === 200) {
       callback(null, xhr.response);
@@ -41,24 +48,34 @@ var getJSON = function(url, callback) {
   xhr.send();
 };
 var json;
-getJSON('https://api.coindesk.com/v1/bpi/currentprice.json',
-function(err, data) {
-  if (err !== null) {
-    alert('Something went wrong: ' + err);
-  } else {
-    json = data;
-    calculate();
-  }
-});
+getJSON('https://api.coinmarketcap.com/v1/ticker/?convert=EUR&limit=10',
+  function (err, data) {
+    if (err !== null) {
+      alert('Something went wrong: ' + err);
+    } else {
+      json = data;
+      calculate();
+    }
+  });
 
-// Calculate current price from amount.
+// Calculate current price from amounts.
 function calculate() {
-  var result = json.bpi.EUR.rate_float * document.getElementById("btc_amount").value;
-  // Pretty format that number.
-  document.getElementById("result").innerHTML = result.formatMoney();
-    // Also update the query parameter in the URL.
-  var newUrl = updateURLParameter(window.location.href, "btc_amount", document.getElementById("btc_amount").value);
-  window.history.replaceState('', '', newUrl);
+  var total = 0;
+  for (var i = 0, len = json.length; i < len; i++) {
+    if (json[i].symbol == "BTC" || json[i].symbol == "BCH") {
+      var rate = json[i].price_eur;
+      var amount_id = json[i].symbol.toLowerCase() + "_amount";
+      var result = rate * document.getElementById(amount_id).value;
+      var result_id = json[i].symbol.toLowerCase() + "_result";
+      // Pretty format that number.
+      document.getElementById(result_id).innerHTML = result.formatMoney();
+      // Also update the query parameter in the URL.
+      var newUrl = updateURLParameter(window.location.href, amount_id, document.getElementById(amount_id).value);
+      window.history.replaceState('', '', newUrl);
+      total += result;
+    }
+  }
+  document.getElementById("total").innerHTML = total.formatMoney();
 }
 
 // Returns a query parameter for the given URL or the current URL.
@@ -66,7 +83,7 @@ function getParameterByName(name, url) {
   if (!url) url = window.location.href;
   name = name.replace(/[\[\]]/g, "\\$&");
   var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
-      results = regex.exec(url);
+    results = regex.exec(url);
   if (!results) return null;
   if (!results[2]) return '';
   return decodeURIComponent(results[2].replace(/\+/g, " "));
@@ -81,51 +98,47 @@ function updateURLParameter(url, param, paramVal) {
   var additionalURL = tempArray[1];
   var temp = "";
 
-  if (additionalURL) 
-  {
-      var tmpAnchor = additionalURL.split("#");
-      var TheParams = tmpAnchor[0];
-          TheAnchor = tmpAnchor[1];
-      if(TheAnchor)
-          additionalURL = TheParams;
+  if (additionalURL) {
+    var tmpAnchor = additionalURL.split("#");
+    var TheParams = tmpAnchor[0];
+    TheAnchor = tmpAnchor[1];
+    if (TheAnchor)
+      additionalURL = TheParams;
 
-      tempArray = additionalURL.split("&");
+    tempArray = additionalURL.split("&");
 
-      for (var i=0; i<tempArray.length; i++)
-      {
-          if(tempArray[i].split('=')[0] != param)
-          {
-              newAdditionalURL += temp + tempArray[i];
-              temp = "&";
-          }
-      }        
+    for (var i = 0; i < tempArray.length; i++) {
+      if (tempArray[i].split('=')[0] != param) {
+        newAdditionalURL += temp + tempArray[i];
+        temp = "&";
+      }
+    }
   }
-  else
-  {
-      var tmpAnchor = baseURL.split("#");
-      var TheParams = tmpAnchor[0];
-          TheAnchor  = tmpAnchor[1];
+  else {
+    var tmpAnchor = baseURL.split("#");
+    var TheParams = tmpAnchor[0];
+    TheAnchor = tmpAnchor[1];
 
-      if(TheParams)
-          baseURL = TheParams;
+    if (TheParams)
+      baseURL = TheParams;
   }
 
-  if(TheAnchor)
-      paramVal += "#" + TheAnchor;
+  if (TheAnchor)
+    paramVal += "#" + TheAnchor;
 
   var rows_txt = temp + "" + param + "=" + paramVal;
   return baseURL + "?" + newAdditionalURL + rows_txt;
 }
 
 // Pretty formatting for numbers.
-Number.prototype.formatMoney = function(places, thousand, decimal) {
-	places = !isNaN(places = Math.abs(places)) ? places : 2;
-	thousand = thousand || ",";
-	decimal = decimal || ".";
-	var number = this, 
-	    negative = number < 0 ? "-" : "",
-	    i = parseInt(number = Math.abs(+number || 0).toFixed(places), 10) + "",
-	    j = (j = i.length) > 3 ? j % 3 : 0;
-	return negative + (j ? i.substr(0, j) + thousand : "") + i.substr(j).replace(/(\d{3})(?=\d)/g, "$1" + thousand) + (places ? decimal + Math.abs(number - i).toFixed(places).slice(2) : "");
+Number.prototype.formatMoney = function (places, thousand, decimal) {
+  places = !isNaN(places = Math.abs(places)) ? places : 2;
+  thousand = thousand || ",";
+  decimal = decimal || ".";
+  var number = this,
+    negative = number < 0 ? "-" : "",
+    i = parseInt(number = Math.abs(+number || 0).toFixed(places), 10) + "",
+    j = (j = i.length) > 3 ? j % 3 : 0;
+  return negative + (j ? i.substr(0, j) + thousand : "") + i.substr(j).replace(/(\d{3})(?=\d)/g, "$1" + thousand) + (places ? decimal + Math.abs(number - i).toFixed(places).slice(2) : "");
 };
 

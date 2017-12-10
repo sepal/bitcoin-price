@@ -1,20 +1,31 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<meta charset="UTF-8">
-<title>My Bitcoin price calculator</title>
+    <meta charset="UTF-8">
+    <title>My Bitcoin price calculator</title>
 </head>
 
 <body>
- <form id="calculator">
-  BTC amount: <input type="text" id="btc_amount" name="btc_amount"><br>
-  EUR: <span id="result">fetching..</span><br>
-  <input type="submit" value="Calculate">
- </form>
- <script src="script.js"></script>
- <footer>
- Powered by <a href="https://www.coindesk.com/price/">CoinDesk</a>.
- </footer>
+    <form id="calculator">
+        Bitcoin (BTC) amount:
+        <input type="text" id="btc_amount" name="btc_amount">
+        <br> EUR:
+        <span id="btc_result">fetching..</span>
+        <br> BCash (BCH) amount:
+        <input type="text" id="bch_amount" name="bch_amount">
+        <br> EUR:
+        <span id="bch_result">fetching..</span>
+        <br> Total EUR:
+        <span id="total">fetching..</span>
+        <br>
+        <input type="submit" value="Calculate">
+    </form>
+    <script src="script.js"></script>
+    <footer>
+        Powered by
+        <a href="https://coinmarketcap.com/">CoinMarketCap</a>.
+    </footer>
 </body>
 
-</html> 
+</html>
