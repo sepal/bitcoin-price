@@ -1,10 +1,9 @@
 html {
-    text-align: center;
-    font-size: 1.5em;
+    font-size: 1.4em;
 }
 
 .total {
-    font-size: 250%;
+    font-size: 200%;
     padding-top: 25px;
     padding-bottom: 25px;
 }
@@ -15,4 +14,30 @@ html {
 
 footer {
     font-size: smaller;
+}
+
+select, input {
+    font-size: 1em;
+}
+
+.item_row {
+    padding-top: 10px;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
+.col-name {
+    width: 320px;
+    padding-right: 20px;
+}
+
+.col-amount {
+    padding-right: 20px;
+}
+
+.col-result {
+    text-align: right;
+    width: 220px;
+    padding-right: 20px;
 }

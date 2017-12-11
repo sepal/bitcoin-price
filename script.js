@@ -101,18 +101,18 @@ function calculate() {
 
 // Add a row for a crypto coin with the given float amount.
 function addRow(coin_data, amount) {
-  form = document.getElementById('calculator');
-  total_row = document.getElementById('total_row');
   var result_id = coin_data.symbol.toLowerCase() + "_result";
   var rate_id = coin_data.symbol.toLowerCase() + "_rate";
   var parameter_name = coin_data.symbol.toLowerCase() + "_amount";
-  var row = coin_data.name + ' (' + coin_data.symbol + ') amount: ';
-  row += '<input type="text" id="' + parameter_name + '" name="' + parameter_name + '" value="' + amount + '">';
-  row += '<br>(1 ' + coin_data.symbol + ' = <span id="' + rate_id + '">0</span> EUR) ';
-  row += 'EUR: <span id="' + result_id + '" class="item-result">0</span> ';
+  var row = '<div class="col-name">' + coin_data.name + '<br>(1 ' + coin_data.symbol + ' = <span id="' + rate_id + '">0</span> EUR)</div>';
+  row += '<div class="col-amount"><input type="text" id="' + parameter_name + '" name="' + parameter_name + '" value="' + amount + '" size="10"></div>';
+  row += '<div class="col-result"><span id="' + result_id + '" class="item-result">0</span> EUR</div>';
   var div = document.createElement('div');
   div.innerHTML = row;
-  form.insertBefore(div, total_row);
+  div.classList.add('item_row');
+
+  var coins_div = document.getElementById('coins');
+  coins_div.appendChild(div);
 
   // Register event listener to trigger whenever the input is changed.
   input = document.getElementById(parameter_name);
