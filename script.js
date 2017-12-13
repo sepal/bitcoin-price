@@ -40,6 +40,15 @@ getJSON('https://api.coinmarketcap.com/v1/ticker/?convert=EUR&limit=10',
         }
       }
       document.getElementById("last_update").innerHTML = Date();
+
+      var currency = getParameterByName('currency');
+      if (currency !== null) {
+        currency = currency.toLowerCase();
+        if (currency == 'eur' || currency == 'usd') {
+          document.getElementById("currency").value = currency;
+        }
+      }
+
       calculate();
     }
   });
@@ -67,6 +76,7 @@ function processForm(e) {
   return false;
 }
 
+// Register event listener when form is submitted.
 var form = document.getElementById('calculator');
 if (form.attachEvent) {
   form.attachEvent("submit", processForm);
@@ -74,15 +84,31 @@ if (form.attachEvent) {
 else {
   form.addEventListener("submit", processForm);
 }
+// Register event listener to trigger whenever the currency is changed.
+var currency_select = document.getElementById("currency");
+if (currency_select.attachEvent) {
+  currency_select.attachEvent("change", calculate);
+}
+else {
+  currency_select.addEventListener("change", calculate);
+}
 
 // Calculate current price from amounts.
 function calculate() {
   var total = 0;
+  var currency = document.getElementById('currency').value;
+
   for (var i = 0, len = json.length; i < len; i++) {
-    var rate = json[i].price_eur;
     var rate_id = json[i].symbol.toLowerCase() + "_rate";
-    var rate_span = document.getElementById(rate_id)
+    var rate_span = document.getElementById(rate_id);
     if (rate_span !== null) {
+      var rate;
+      if (currency == 'eur') {
+        rate = json[i].price_eur;
+      }
+      else {
+        rate = json[i].price_usd;
+      }
       rate_span.innerHTML = parseFloat(rate).formatMoney();
 
       var amount_id = json[i].symbol.toLowerCase() + "_amount";
@@ -96,6 +122,14 @@ function calculate() {
       total += result;
     }
   }
+  var currency_spans = document.getElementsByClassName("currency");
+  for (var i = 0, len = currency_spans.length; i < len; i++) {
+    currency_spans[i].innerHTML = currency.toUpperCase();
+  }
+  // Also update the currency query parameter in the URL.
+  var newUrl = updateURLParameter(window.location.href, 'currency', currency);
+  window.history.replaceState('', '', newUrl);
+
   document.getElementById("total").innerHTML = total.formatMoney();
 }
 
@@ -104,9 +138,10 @@ function addRow(coin_data, amount) {
   var result_id = coin_data.symbol.toLowerCase() + "_result";
   var rate_id = coin_data.symbol.toLowerCase() + "_rate";
   var parameter_name = coin_data.symbol.toLowerCase() + "_amount";
-  var row = '<div class="col-name">' + coin_data.name + '<br>(1 ' + coin_data.symbol + ' = <span id="' + rate_id + '">0</span> EUR)</div>';
+  var currency = document.getElementById('currency').value.toUpperCase();
+  var row = '<div class="col-name">' + coin_data.name + '<br>(1 ' + coin_data.symbol + ' = <span id="' + rate_id + '">0</span> <span class="currency">' + currency + '</span>)</div>';
   row += '<div class="col-amount"><input type="text" id="' + parameter_name + '" name="' + parameter_name + '" value="' + amount + '" size="10"></div>';
-  row += '<div class="col-result"><span id="' + result_id + '" class="item-result">0</span> EUR</div>';
+  row += '<div class="col-result"><span id="' + result_id + '" class="item-result">0</span> <span class="currency">' + currency + '</span></div>';
   var div = document.createElement('div');
   div.innerHTML = row;
   div.classList.add('item_row');
