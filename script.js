@@ -15,7 +15,7 @@ var getJSON = function (url, callback) {
   xhr.send();
 };
 var json;
-getJSON('https://api.coinmarketcap.com/v1/ticker/?convert=EUR&limit=10',
+getJSON('https://api.coinmarketcap.com/v1/ticker/?convert=EUR&limit=15',
   function (err, data) {
     if (err !== null) {
       alert('Something went wrong: ' + err);
