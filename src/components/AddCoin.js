@@ -5,10 +5,21 @@ import React, {Component} from 'react'
  * Form that allows to add a new coin for conversion.
  */
 class AddCoin extends Component {
-  state = {
-    coin: undefined,
-    amount: 0
-  };
+
+
+  constructor(props) {
+    super(props);
+
+    // Set a default coin, if the coins prop isn't empty, otherwise set it to
+    // undefined and wait for the next prop update to set a default coin.
+    const defaultCoin = props.coins.length > 0 ?
+      props.coins[0].symbol : undefined;
+
+    this.state = {
+      coin: defaultCoin,
+      amount: 0
+    };
+  }
 
   componentWillReceiveProps(nextProps) {
     // If new props with coins was passed, and our currency is still
