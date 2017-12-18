@@ -1,4 +1,5 @@
 import React from 'react';
+import "./Coin.css";
 
 /**
  * Renders the conversion between a crypto currency/coin and a traditional
