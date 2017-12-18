@@ -22,7 +22,8 @@ class App extends Component {
       for(let pair of params.entries()) {
         const symbol = pair[0].replace(/_amount/gi, '').toUpperCase();
         if (symbol in coins) {
-          coinsToConvert.push(this.getCoinInfo(coins[symbol], pair[1], this.state.currency))
+          coinsToConvert.push(this.getCoinInfo(coins[symbol], pair[1], this.state.currency));
+          delete coins[symbol];
         }
       }
 
