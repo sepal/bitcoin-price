@@ -5,8 +5,6 @@ import React from 'react';
  * currency.
  */
 export default function (props) {
-  console.log(props.amount);
-  console.log(props.price);
   return (
     <li className="coin">
       <div className="coin__name">
