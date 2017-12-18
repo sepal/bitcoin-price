@@ -15,8 +15,19 @@ class App extends Component {
 
   componentDidMount() {
     fetchCurrencies().then((data) => {
-      this.setState((prev, props) => ({coins: data}));
-    })
+      const url = new URL(window.location);
+      let params = new URLSearchParams(url.search);
+      let coins = data;
+      let coinsToConvert = [];
+      for(let pair of params.entries()) {
+        const symbol = pair[0].replace(/_amount/gi, '').toUpperCase();
+        if (symbol in coins) {
+          coinsToConvert.push(this.getCoinInfo(coins[symbol], pair[1], this.state.currency))
+        }
+      }
+
+      this.setState((prev, props) => ({coins: coins, coinsToConvert: coinsToConvert}));
+    });
   }
 
   render() {
@@ -35,6 +46,18 @@ class App extends Component {
         <CoinList coins={this.state.coinsToConvert} />
       </div>
     );
+  }
+
+  getCoinInfo(coin, amount, currency) {
+    return  {
+      label: coin.name,
+      symbol: coin.symbol,
+      amount: amount,
+      price: coin.price[currency],
+      // @todo: replace with function, so that implementing support for more
+      // currencies is easier.
+      currency: currency.toUpperCase()
+    };
   }
 
   handleCoinAdd = (coinSymbol, amount) => {
@@ -58,15 +81,7 @@ class App extends Component {
       // Return a new state with the new coin added to coinsToConvert list and
       // removed from the coins available object.
       return {
-        coinsToConvert: [...prevState.coinsToConvert, {
-          label: coin.label,
-          symbol: coin.symbol,
-          amount: amount,
-          price: coin.price[prevState.currency],
-          // @todo: replace with function, so that implementing support for more
-          // currencies is easier.
-          currency: prevState.currency.toUpperCase()
-        }],
+        coinsToConvert: [...prevState.coinsToConvert, this.getCoinInfo(coin, amount, prevState.currency)],
         coins: coins
       }
     })
