@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import './App.css';
 import {fetchCurrencies} from '../api';
-import AddCurrency from './AddCurrency';
+import AddCoin from './AddCoin';
 
 class App extends Component {
   state = {
@@ -18,7 +18,7 @@ class App extends Component {
     return (
       <div className="App">
         <div className="App-intro">
-          <AddCurrency currencies={Object.values(this.state.coins)}/>
+          <AddCoin coins={Object.values(this.state.coins)}/>
         </div>
       </div>
     );

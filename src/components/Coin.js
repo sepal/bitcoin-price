@@ -10,14 +10,14 @@ export default function (props) {
       <div className="coin__name">
         <div>{props.label}</div>
         <div>
-          (1 {props.symbol} = {props.price} {props.currency}
+          (1 {props.symbol} = {props.price} {props.coin}
         </div>
       </div>
       <div className="coin__amount">
         {props.amount} {props.symbol}
       </div>
       <div className="coin__result">
-        {props.result} {props.currency}
+        {props.result} {props.coin}
       </div>
     </li>
   );
