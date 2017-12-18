@@ -13,15 +13,18 @@ export function fetchCurrencies() {
       // Get the response as json.
       return response.json()
     }).then(function (data) {
-      // return only the data we really need.
-      return data.map((coin) => {
-        return {
+      // Return a map with the coins symbol as key and the important data as
+      // an object value.
+      let coins = {};
+      data.forEach((coin) => {
+        coins[coin.symbol] = {
           name: coin['name'],
           symbol: coin['symbol'],
           price_eur: coin['price_eur'],
           price_usd: coin['price_usd'],
           query_param: `${coin['symbol'].toLowerCase()}_amount`,
-        }
+        };
       });
+      return coins;
     });
 }

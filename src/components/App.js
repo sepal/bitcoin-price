@@ -5,12 +5,12 @@ import AddCurrency from './AddCurrency';
 
 class App extends Component {
   state = {
-    currencies: []
+    coins: {}
   };
 
   componentDidMount() {
     fetchCurrencies().then((data) => {
-      this.setState((prev, props) => ({currencies: data}));
+      this.setState((prev, props) => ({coins: data}));
     })
   }
 
@@ -18,7 +18,7 @@ class App extends Component {
     return (
       <div className="App">
         <div className="App-intro">
-          <AddCurrency currencies={this.state.currencies}/>
+          <AddCurrency currencies={Object.values(this.state.coins)}/>
         </div>
       </div>
     );
