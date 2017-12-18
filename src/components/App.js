@@ -18,9 +18,17 @@ class App extends Component {
   }
 
   render() {
+    const coins = Object.values(this.state.coins);
+
+    if (coins.length === 0) {
+      return (
+        <div className="App">Loading coin data...</div>
+      )
+    }
+
     return (
       <div className="App">
-        <AddCoin coins={Object.values(this.state.coins)}
+        <AddCoin coins={coins}
                  onChange={this.handleCoinAdd} />
         <CoinList coins={this.state.coinsToConvert} />
       </div>
