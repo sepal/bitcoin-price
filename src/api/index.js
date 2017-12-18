@@ -2,7 +2,7 @@ import 'whatwg-fetch';
 
 const API_URL = 'https://api.coinmarketcap.com/v1/ticker/?convert=EUR&limit=15';
 
-export function fetchCoinPrice() {
+export function fetchCurrencies() {
   return fetch(API_URL)
     .then(function(response) {
       return response.json()

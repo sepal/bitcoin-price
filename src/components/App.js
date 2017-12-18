@@ -1,16 +1,25 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import './App.css';
+import {fetchCurrencies} from '../api';
+import AddCurrency from './AddCurrency';
 
 class App extends Component {
+  state = {
+    currencies: []
+  };
+
+  componentDidMount() {
+    fetchCurrencies().then((data) => {
+      this.setState((prev, props) => ({currencies: data}));
+    })
+  }
+
   render() {
     return (
       <div className="App">
-        <header className="App-header">
-          <h1 className="App-title">Welcome to React</h1>
-        </header>
-        <p className="App-intro">
-          To get started, edit <code>src/App.js</code> and save to reload.
-        </p>
+        <div className="App-intro">
+          <AddCurrency currencies={this.state.currencies}/>
+        </div>
       </div>
     );
   }
