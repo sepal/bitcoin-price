@@ -20,8 +20,10 @@ export function fetchCurrencies() {
         coins[coin.symbol] = {
           name: coin['name'],
           symbol: coin['symbol'],
-          price_eur: coin['price_eur'],
-          price_usd: coin['price_usd'],
+          price: {
+            eur: coin['price_eur'],
+            usd: coin['price_usd']
+          },
           query_param: `${coin['symbol'].toLowerCase()}_amount`,
         };
       });

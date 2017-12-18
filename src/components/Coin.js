@@ -5,19 +5,21 @@ import React from 'react';
  * currency.
  */
 export default function (props) {
+  console.log(props.amount);
+  console.log(props.price);
   return (
     <li className="coin">
       <div className="coin__name">
         <div>{props.label}</div>
         <div>
-          (1 {props.symbol} = {props.price} {props.coin}
+          (1 {props.symbol} = {props.price} {props.currency})
         </div>
       </div>
       <div className="coin__amount">
-        {props.amount} {props.symbol}
+        {props.amount * props.price} {props.symbol}
       </div>
       <div className="coin__result">
-        {props.result} {props.coin}
+        {props.result} {props.currency}
       </div>
     </li>
   );

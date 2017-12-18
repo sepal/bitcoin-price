@@ -2,10 +2,13 @@ import React, {Component} from 'react';
 import './App.css';
 import {fetchCurrencies} from '../api';
 import AddCoin from './AddCoin';
+import CoinList from './CoinList';
 
 class App extends Component {
   state = {
-    coins: {}
+    coins: {},
+    coinsToConvert: [],
+    currency: 'eur'
   };
 
   componentDidMount() {
@@ -17,11 +20,24 @@ class App extends Component {
   render() {
     return (
       <div className="App">
-        <div className="App-intro">
-          <AddCoin coins={Object.values(this.state.coins)}/>
-        </div>
+        <AddCoin coins={Object.values(this.state.coins)} onChange={this.handleCoinAdd}/>
+        <CoinList coins={this.state.coinsToConvert} />
       </div>
     );
+  }
+
+  handleCoinAdd = (coinSymbol, amount) => {
+    this.setState((prevState, props) => ({
+      coinsToConvert: [...prevState.coinsToConvert, {
+        label: prevState.coins[coinSymbol].label,
+        symbol: prevState.coins[coinSymbol].symbol,
+        amount: amount,
+        price: prevState.coins[coinSymbol].price[prevState.currency],
+        // @todo: replace with function, so that implementing support for more
+        // currencies is easier.
+        currency: prevState.currency.toUpperCase()
+      }],
+    }))
   }
 }
 
