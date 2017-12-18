@@ -20,24 +20,31 @@ class App extends Component {
   render() {
     return (
       <div className="App">
-        <AddCoin coins={Object.values(this.state.coins)} onChange={this.handleCoinAdd}/>
+        <AddCoin coins={Object.values(this.state.coins)}
+                 onChange={this.handleCoinAdd} />
         <CoinList coins={this.state.coinsToConvert} />
       </div>
     );
   }
 
   handleCoinAdd = (coinSymbol, amount) => {
-    this.setState((prevState, props) => ({
-      coinsToConvert: [...prevState.coinsToConvert, {
-        label: prevState.coins[coinSymbol].label,
-        symbol: prevState.coins[coinSymbol].symbol,
-        amount: amount,
-        price: prevState.coins[coinSymbol].price[prevState.currency],
-        // @todo: replace with function, so that implementing support for more
-        // currencies is easier.
-        currency: prevState.currency.toUpperCase()
-      }],
-    }))
+    this.setState((prevState, props) => {
+      let coins = {...prevState.coins};
+      delete coins[coinSymbol];
+
+      return {
+        coinsToConvert: [...prevState.coinsToConvert, {
+          label: prevState.coins[coinSymbol].label,
+          symbol: prevState.coins[coinSymbol].symbol,
+          amount: amount,
+          price: prevState.coins[coinSymbol].price[prevState.currency],
+          // @todo: replace with function, so that implementing support for more
+          // currencies is easier.
+          currency: prevState.currency.toUpperCase()
+        }],
+        coins: coins
+      }
+    })
   }
 }
 
