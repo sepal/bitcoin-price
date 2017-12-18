@@ -1,4 +1,6 @@
 import React, {Component} from 'react';
+import 'url-search-params-polyfill';
+
 import './App.css';
 import {fetchCurrencies} from '../api';
 import AddCoin from './AddCoin';
@@ -37,15 +39,30 @@ class App extends Component {
 
   handleCoinAdd = (coinSymbol, amount) => {
     this.setState((prevState, props) => {
+      // Remove the coin that is about to be added from the available coins to
+      // add.
       let coins = {...prevState.coins};
       delete coins[coinSymbol];
 
+      // Get the coin that should be added.
+      const coin = prevState.coins[coinSymbol];
+
+      // Append the the new coin to the url, so that users can bookmark the
+      // site and retrieve and thus save/bookmark the settings.
+      // @todo: Add polyfill for URL.
+      const url = new URL(window.location);
+      let params = new URLSearchParams(url.search);
+      params.append(coin.queryParam, amount);
+      window.history.replaceState('', '', `?${params.toString()}`);
+
+      // Return a new state with the new coin added to coinsToConvert list and
+      // removed from the coins available object.
       return {
         coinsToConvert: [...prevState.coinsToConvert, {
-          label: prevState.coins[coinSymbol].label,
-          symbol: prevState.coins[coinSymbol].symbol,
+          label: coin.label,
+          symbol: coin.symbol,
           amount: amount,
-          price: prevState.coins[coinSymbol].price[prevState.currency],
+          price: coin.price[prevState.currency],
           // @todo: replace with function, so that implementing support for more
           // currencies is easier.
           currency: prevState.currency.toUpperCase()

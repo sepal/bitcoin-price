@@ -24,7 +24,7 @@ export function fetchCurrencies() {
             eur: coin['price_eur'],
             usd: coin['price_usd']
           },
-          query_param: `${coin['symbol'].toLowerCase()}_amount`,
+          queryParam: `${coin['symbol'].toLowerCase()}_amount`,
         };
       });
       return coins;
