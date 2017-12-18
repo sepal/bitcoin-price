@@ -82,7 +82,7 @@ class AddCoin extends Component {
     // If the coin state is set and a onChange function was passed to the
     // props, then call it with the coin and amount as parameters.
     if (this.state.coin !== undefined && 'onChange' in this.props) {
-      this.props.onChange(this.state.coin, this.state.amount);
+      this.props.onChange(this.state.coin, parseFloat(this.state.amount));
     }
   };
 }

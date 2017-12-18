@@ -39,11 +39,22 @@ class App extends Component {
       )
     }
 
+    console.log(this.state.coinsToConvert);
+    let sum = 0;
+    this.state.coinsToConvert.forEach((coin) => {
+      sum += coin.amount * coin.price;
+    });
+
+    console.log(sum);
+
     return (
       <div className="App">
         <AddCoin coins={coins}
                  onChange={this.handleCoinAdd} />
         <CoinList coins={this.state.coinsToConvert} />
+        <div className="total">
+          Total: {`${sum} ${this.state.currency.toUpperCase()}`}
+        </div>
       </div>
     );
   }

@@ -4,13 +4,8 @@
   padding: 1.5rem;
 }
 
-
-.App-title {
-  font-size: 1.5em;
-}
-
-.App-intro {
-  font-size: large;
+.total {
+  font-size: 1.75rem;
 }
 
 @keyframes App-logo-spin {

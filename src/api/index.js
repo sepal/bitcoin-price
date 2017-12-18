@@ -21,8 +21,8 @@ export function fetchCurrencies() {
           name: coin['name'],
           symbol: coin['symbol'],
           price: {
-            eur: coin['price_eur'],
-            usd: coin['price_usd']
+            eur: parseFloat(coin['price_eur']),
+            usd: parseFloat(coin['price_usd'])
           },
           queryParam: `${coin['symbol'].toLowerCase()}_amount`,
         };
