@@ -48,8 +48,9 @@ class AddCoin extends Component {
    * Handles coin form element changes.
    */
   handleCoinChange = (event) => {
+    const val = event.target.value;
     this.setState((prev, props) => ({
-      coin: event.value
+      coin: val
     }));
   };
 
@@ -57,8 +58,9 @@ class AddCoin extends Component {
    * Handles amount form element changes.
    */
   handleAmountChange = (event) => {
+    const val = event.target.value;
     this.setState((prev, props) => ({
-      amount: event.value
+      amount: val
     }));
   };
 
