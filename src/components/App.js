@@ -9,7 +9,8 @@ import CoinList from './CoinList';
 class App extends Component {
   state = {
     coins: {},
-    coinsToConvert: [],
+    coinsAvailable: [],
+    myCoins: [],
     currency: 'eur'
   };
 
@@ -17,17 +18,29 @@ class App extends Component {
     fetchCurrencies().then((data) => {
       const url = new URL(window.location);
       let params = new URLSearchParams(url.search);
-      let coins = data;
-      let coinsToConvert = [];
+
+      let coinsAvailable = Object.values(data).map((coin) => ({
+        symbol: coin.symbol,
+        name: coin.name
+      }));
+      let myCoins = [];
+
+
       for(let pair of params.entries()) {
         const symbol = pair[0].replace(/_amount/gi, '').toUpperCase();
-        if (symbol in coins) {
-          coinsToConvert.push(this.getCoinInfo(coins[symbol], pair[1], this.state.currency));
-          delete coins[symbol];
+        if (symbol in data) {
+          myCoins.push(this.getCoinInfo(data[symbol], pair[1], this.state.currency));
+          coinsAvailable = coinsAvailable.filter((item) => {
+            return item.symbol !== symbol;
+          });
         }
       }
 
-      this.setState((prev, props) => ({coins: coins, coinsToConvert: coinsToConvert}));
+      this.setState((prev, props) => ({
+        coins: data,
+        coinsAvailable: coinsAvailable,
+        myCoins: myCoins
+      }));
     });
   }
 
@@ -40,19 +53,16 @@ class App extends Component {
       )
     }
 
-    console.log(this.state.coinsToConvert);
     let sum = 0;
-    this.state.coinsToConvert.forEach((coin) => {
+    this.state.myCoins.forEach((coin) => {
       sum += coin.amount * coin.price;
     });
 
-    console.log(sum);
-
     return (
       <div className="App">
-        <AddCoin coins={coins}
+        <AddCoin coins={this.state.coinsAvailable}
                  onChange={this.handleCoinAdd} />
-        <CoinList coins={this.state.coinsToConvert} />
+        <CoinList coins={this.state.myCoins} />
         <div className="total">
           Total: {`${sum} ${this.state.currency.toUpperCase()}`}
         </div>
@@ -76,8 +86,9 @@ class App extends Component {
     this.setState((prevState, props) => {
       // Remove the coin that is about to be added from the available coins to
       // add.
-      let coins = {...prevState.coins};
-      delete coins[coinSymbol];
+      const coinsAvailable = prevState.coinsAvailable.filter((item) => {
+         return item.symbol !== coinSymbol;
+      });
 
       // Get the coin that should be added.
       const coin = prevState.coins[coinSymbol];
@@ -90,11 +101,11 @@ class App extends Component {
       params.append(coin.queryParam, amount);
       window.history.replaceState('', '', `?${params.toString()}`);
 
-      // Return a new state with the new coin added to coinsToConvert list and
+      // Return a new state with the new coin added to myCoins list and
       // removed from the coins available object.
       return {
-        coinsToConvert: [...prevState.coinsToConvert, this.getCoinInfo(coin, amount, prevState.currency)],
-        coins: coins
+        myCoins: [...prevState.myCoins, this.getCoinInfo(coin, amount, prevState.currency)],
+        coinsAvailable: coinsAvailable
       }
     })
   }
