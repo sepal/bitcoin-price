@@ -1,6 +1,5 @@
 import React, {Component} from 'react';
-import 'url-search-params-polyfill';
-
+import {getAllUrlParams, setUrlParam} from '../utility/url_settings'
 import './App.css';
 import {fetchCurrencies} from '../api';
 import AddCoin from './AddCoin';
@@ -16,9 +15,6 @@ class App extends Component {
 
   componentDidMount() {
     fetchCurrencies().then((data) => {
-      const url = new URL(window.location);
-      let params = new URLSearchParams(url.search);
-
       let coinsAvailable = Object.values(data).map((coin) => ({
         symbol: coin.symbol,
         name: coin.name
@@ -26,7 +22,7 @@ class App extends Component {
       let myCoins = [];
 
 
-      for(let pair of params.entries()) {
+      for(let pair of getAllUrlParams()) {
         const symbol = pair[0].replace(/_amount/gi, '').toUpperCase();
         if (symbol in data) {
           myCoins.push(this.getCoinInfo(data[symbol], pair[1], this.state.currency));
@@ -95,11 +91,7 @@ class App extends Component {
 
       // Append the the new coin to the url, so that users can bookmark the
       // site and retrieve and thus save/bookmark the settings.
-      // @todo: Add polyfill for URL.
-      const url = new URL(window.location);
-      let params = new URLSearchParams(url.search);
-      params.append(coin.queryParam, amount);
-      window.history.replaceState('', '', `?${params.toString()}`);
+      setUrlParam(coin.queryParam, amount);
 
       // Return a new state with the new coin added to myCoins list and
       // removed from the coins available object.
