@@ -47,7 +47,7 @@ class AddCoin extends Component {
           {coins}
         </select>
         &nbsp;
-        <input type="number" min="0.00" step="0.01" defaultValue="0"
+        <input type="number" min="0.00" defaultValue="0"
                onChange={this.handleAmountChange} />
         &nbsp;
         <button onClick={this.handleAddClick}>Add</button>
