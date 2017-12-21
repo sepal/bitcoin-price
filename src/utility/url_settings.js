@@ -3,13 +3,19 @@ import 'url-search-params-polyfill';
 // @todo: Add polyfill for URL.
 
 /**
- * Returns an iterator with the key, value pairs of the current url parameters.
+ * Returns a map with the settings that come from the current url params.
+ * Currently only single value settings are allowed.
  */
 export function getAllUrlParams() {
   const url = new URL(window.location);
   let params = new URLSearchParams(url.search);
+  let settings = new Map();
 
-  return params.entries();
+  for (const entry of params.entries()) {
+    settings.set(entry[0], entry[1]);
+  }
+
+  return settings;
 }
 
 /**

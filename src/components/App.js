@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {getAllUrlParams, setUrlParam} from '../utility/url_settings'
+import {setUrlParam} from '../utility/url_settings'
 import './App.css';
 import {fetchCurrencies} from '../api';
 import AddCoin from './AddCoin';
@@ -15,26 +15,24 @@ class App extends Component {
 
   componentDidMount() {
     fetchCurrencies().then((data) => {
-      let coinsAvailable = Object.values(data).map((coin) => ({
+      let coinList = Object.values(data).map((coin) => ({
         symbol: coin.symbol,
         name: coin.name
       }));
       let myCoins = [];
 
-
-      for(let pair of getAllUrlParams()) {
-        const symbol = pair[0].replace(/_amount/gi, '').toUpperCase();
+      this.props.defaultCoins.forEach((amount, key) => {
+        const symbol = key.replace(/_amount/gi, '').toUpperCase();
         if (symbol in data) {
-          myCoins.push(this.getCoinInfo(data[symbol], pair[1], this.state.currency));
-          coinsAvailable = coinsAvailable.filter((item) => {
-            return item.symbol !== symbol;
-          });
+          coinList = coinList.filter((coin) => coin.symbol !== symbol);
+          myCoins.push(this.getCoinInfo(data[symbol], amount, this.state.currency));
         }
-      }
+      });
+
 
       this.setState((prev, props) => ({
         coins: data,
-        coinsAvailable: coinsAvailable,
+        coinsAvailable: coinList,
         myCoins: myCoins
       }));
     });
