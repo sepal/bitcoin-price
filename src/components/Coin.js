@@ -41,7 +41,9 @@ export default function (props) {
         &nbsp;{props.currency.toUpperCase()}
       </div>
       <div className="coin__actions">
-        <button title={`Remove coin ${props.name}`} onClick={handleRemove}>X</button>
+        <button title={`Remove coin ${props.name}`} onClick={handleRemove}>
+          <span className="icon" aria-hidden="true">&#10006;</span>
+        </button>
       </div>
     </li>
   );

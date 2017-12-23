@@ -1,25 +1,53 @@
 .coin {
+  position: relative;
   width: 100%;
   display: flex;
   justify-content: space-between;
   flex-direction: column;
-  align-items: flex-end;
   padding: 1.5rem 0;
+}
+
+
+.coin__actions button {
+  background: #ff3847;
+  color: white;
+  font-size: 1.5rem;
+  border-radius: 3px;
+  border: none;
+  cursor: pointer;
+}
+
+.coin__actions button:focus,
+.coin__actions button:hover{
+  background: #ff5628;
+}
+
+.coin__actions button:active {
+  background: #d54923;
+}
+
+@media screen and (max-width: 500px) {
+  .coin__actions {
+    position: absolute;
+    top: 1.5rem;
+    right: 0;
+  }
 }
 
 @media screen and (min-width: 500px) {
   .coin {
     flex-direction: row;
+    align-items: flex-end;
     padding: 0.75rem 0;
   }
-}
 
-.coin__name {
-  width: 40%;
-}
+  .coin__name {
+    width: 40%;
+  }
 
-.coin__amount, .coin__result {
-  margin: 0 1.5rem;
-  width: 30%;
-  text-align: right;
+  .coin__amount, .coin__result {
+    margin: 0 1.5rem;
+    width: 30%;
+    text-align: right;
+  }
 }
