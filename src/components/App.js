@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import NumberFormat from 'react-number-format';
 import {setUrlParam} from '../utility/url_settings'
 import './App.css';
 import {fetchCurrencies} from '../api';
@@ -42,12 +43,6 @@ class App extends Component {
           myCoins.push(coin);
         }
       });
-      console.log({
-        coins: data,
-        coinsAvailable: coinList,
-        myCoins: myCoins,
-        total: total
-      });
 
       this.setState((prev, props) => ({
         coins: data,
@@ -71,9 +66,16 @@ class App extends Component {
       <div className="App">
         <AddCoin coins={this.state.coinsAvailable}
                  onChange={this.handleCoinAdd} />
-        <CoinList coins={this.state.myCoins} currency={this.state.currency}/>
-        <div className="total">
-          Total: {`${this.state.total} ${this.state.currency.toUpperCase()}`}
+        <CoinList coins={this.state.myCoins} currency={this.state.currency}
+                  onRemove={this.handleCoinRemove} />
+          <div className="total">
+            Total: <NumberFormat
+            value={this.state.total}
+            displayType={'text'}
+            thousandSeparator={true}
+            decimalScale={2}
+          />
+          &nbsp;{this.state.currency.toUpperCase()}
         </div>
       </div>
     );
@@ -92,7 +94,7 @@ class App extends Component {
       // Remove the coin that is about to be added from the available coins to
       // add.
       const coinsAvailable = prevState.coinsAvailable.filter((item) => {
-         return item.symbol !== coinSymbol;
+        return item.symbol !== coinSymbol;
       });
 
       // Get the coin that should be added.
@@ -102,6 +104,10 @@ class App extends Component {
         prevState.currency
       );
 
+      const newMyCoins = [...prevState.myCoins, coin];
+
+      const total = newMyCoins.reduce((acc, coin) => acc + coin.value);
+
       // Append the the new coin to the url, so that users can bookmark the
       // site and retrieve and thus save/bookmark the settings.
       setUrlParam(coin.queryParam, amount);
@@ -109,12 +115,33 @@ class App extends Component {
       // Return a new state with the new coin added to myCoins list and
       // removed from the coins available object.
       return {
-        myCoins: [...prevState.myCoins, coin],
+        myCoins: newMyCoins,
         coinsAvailable: coinsAvailable,
         total: prevState.total + coin.value
       }
-    })
-  }
+    });
+  };
+
+  handleCoinRemove = (coinToRemove) => {
+    this.setState((prevState, props) => {
+      const myCoins = prevState.myCoins.filter((coin) => coin.symbol != coinToRemove.symbol);
+
+      const coinAvailable = {
+        symbol: coinToRemove.symbol,
+        name: coinToRemove.name
+      };
+
+      const total = myCoins.length > 1 ?
+        myCoins.reduce((acc, coin) => ({value: acc.value + coin.value})) :
+        {value: 0};
+
+      return {
+        myCoins: myCoins,
+        coinsAvailable: [...prevState.coinsAvailable, coinAvailable],
+        total: total.value
+      }
+    });
+  };
 }
 
 export default App;

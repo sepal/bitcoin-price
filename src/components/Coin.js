@@ -17,7 +17,11 @@ function getPriceComponent(price) {
  * currency.
  */
 export default function (props) {
-  console.log(props);
+  const handleRemove = (event) => {
+    if (props.onRemove) {
+      props.onRemove(props);
+    }
+  };
   return (
     <li className="coin">
       <div className="coin__name">
@@ -35,6 +39,9 @@ export default function (props) {
           getPriceComponent(props.value)
         }
         &nbsp;{props.currency.toUpperCase()}
+      </div>
+      <div className="coin__actions">
+        <button title={`Remove coin ${props.name}`} onClick={handleRemove}>X</button>
       </div>
     </li>
   );
