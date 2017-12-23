@@ -14,7 +14,7 @@ export function fetchCurrencies() {
       return response.json()
     }).then(function (data) {
       // Return a map with the coins symbol as key and the important data as
-      // an object value.
+      // an object value + additional fields we'll need.
       let coins = {};
       data.forEach((coin) => {
         coins[coin.symbol] = {
@@ -25,6 +25,8 @@ export function fetchCurrencies() {
             usd: parseFloat(coin['price_usd'])
           },
           queryParam: `${coin['symbol'].toLowerCase()}_amount`,
+          amount: 0,
+          value: 0,
         };
       });
       return coins;

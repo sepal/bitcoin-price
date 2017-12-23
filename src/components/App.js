@@ -10,30 +10,50 @@ class App extends Component {
     coins: {},
     coinsAvailable: [],
     myCoins: [],
-    currency: 'eur'
+    currency: 'eur',
+    total: 0,
   };
 
   componentDidMount() {
+    // Fetch the currencies.
     fetchCurrencies().then((data) => {
+      // Keep all the available coins in a separate list with name and symbol.
       let coinList = Object.values(data).map((coin) => ({
         symbol: coin.symbol,
         name: coin.name
       }));
       let myCoins = [];
+      let total = 0;
 
+      // Add all the coins added via props and remove them from the available
+      // coins list.
       this.props.defaultCoins.forEach((amount, key) => {
         const symbol = key.replace(/_amount/gi, '').toUpperCase();
         if (symbol in data) {
           coinList = coinList.filter((coin) => coin.symbol !== symbol);
-          myCoins.push(this.getCoinInfo(data[symbol], amount, this.state.currency));
+
+          const coin = this.prepareCoinToAdd(
+            data[symbol],
+            amount,
+            this.state.currency
+          );
+          total += coin.value;
+
+          myCoins.push(coin);
         }
       });
-
+      console.log({
+        coins: data,
+        coinsAvailable: coinList,
+        myCoins: myCoins,
+        total: total
+      });
 
       this.setState((prev, props) => ({
         coins: data,
         coinsAvailable: coinList,
-        myCoins: myCoins
+        myCoins: myCoins,
+        total: total
       }));
     });
   }
@@ -47,32 +67,23 @@ class App extends Component {
       )
     }
 
-    let sum = 0;
-    this.state.myCoins.forEach((coin) => {
-      sum += coin.amount * coin.price;
-    });
-
     return (
       <div className="App">
         <AddCoin coins={this.state.coinsAvailable}
                  onChange={this.handleCoinAdd} />
-        <CoinList coins={this.state.myCoins} />
+        <CoinList coins={this.state.myCoins} currency={this.state.currency}/>
         <div className="total">
-          Total: {`${sum} ${this.state.currency.toUpperCase()}`}
+          Total: {`${this.state.total} ${this.state.currency.toUpperCase()}`}
         </div>
       </div>
     );
   }
 
-  getCoinInfo(coin, amount, currency) {
-    return  {
-      label: coin.name,
-      symbol: coin.symbol,
+  prepareCoinToAdd(coin, amount, currency) {
+    return {
+      ...coin,
       amount: amount,
-      price: coin.price[currency],
-      // @todo: replace with function, so that implementing support for more
-      // currencies is easier.
-      currency: currency.toUpperCase()
+      value: amount * coin.price[currency]
     };
   }
 
@@ -85,7 +96,11 @@ class App extends Component {
       });
 
       // Get the coin that should be added.
-      const coin = prevState.coins[coinSymbol];
+      const coin = this.prepareCoinToAdd(
+        prevState.coins[coinSymbol],
+        amount,
+        prevState.currency
+      );
 
       // Append the the new coin to the url, so that users can bookmark the
       // site and retrieve and thus save/bookmark the settings.
@@ -94,8 +109,9 @@ class App extends Component {
       // Return a new state with the new coin added to myCoins list and
       // removed from the coins available object.
       return {
-        myCoins: [...prevState.myCoins, this.getCoinInfo(coin, amount, prevState.currency)],
-        coinsAvailable: coinsAvailable
+        myCoins: [...prevState.myCoins, coin],
+        coinsAvailable: coinsAvailable,
+        total: prevState.total + coin.value
       }
     })
   }

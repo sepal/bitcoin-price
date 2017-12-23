@@ -6,19 +6,20 @@ import "./Coin.css";
  * currency.
  */
 export default function (props) {
+  console.log(props);
   return (
     <li className="coin">
       <div className="coin__name">
-        <div>{props.label}</div>
+        <div>{props.name}</div>
         <div>
-          (1 {props.symbol} = {props.price} {props.currency})
+          (1 {props.symbol} = {props.price[props.currency]} {props.currency})
         </div>
       </div>
       <div className="coin__amount">
         {props.amount} {props.symbol}
       </div>
       <div className="coin__result">
-        {props.amount * props.price} {props.currency}
+        {props.value} {props.currency}
       </div>
     </li>
   );
