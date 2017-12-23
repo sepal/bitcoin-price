@@ -1,6 +1,6 @@
 .coin {
-  display: flex;
   width: 100%;
+  display: flex;
   justify-content: space-between;
   flex-direction: column;
   align-items: flex-end;
@@ -14,3 +14,12 @@
   }
 }
 
+.coin__name {
+  width: 40%;
+}
+
+.coin__amount, .coin__result {
+  margin: 0 1.5rem;
+  width: 30%;
+  text-align: right;
+}
