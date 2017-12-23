@@ -12,14 +12,14 @@ export default function (props) {
       <div className="coin__name">
         <div>{props.name}</div>
         <div>
-          (1 {props.symbol} = {props.price[props.currency]} {props.currency})
+          (1 {props.symbol} = {props.price[props.currency]} {props.currency.toUpperCase()})
         </div>
       </div>
       <div className="coin__amount">
         {props.amount} {props.symbol}
       </div>
       <div className="coin__result">
-        {props.value} {props.currency}
+        {props.value} {props.currency.toUpperCase()}
       </div>
     </li>
   );
