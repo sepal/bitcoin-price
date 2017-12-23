@@ -24,7 +24,6 @@ class App extends Component {
         name: coin.name
       }));
       let myCoins = [];
-      let total = 0;
 
       // Add all the coins added via props and remove them from the available
       // coins list.
@@ -38,8 +37,6 @@ class App extends Component {
             amount,
             this.state.currency
           );
-          total += coin.value;
-
           myCoins.push(coin);
         }
       });
@@ -48,7 +45,7 @@ class App extends Component {
         coins: data,
         coinsAvailable: coinList,
         myCoins: myCoins,
-        total: total
+        total: this.calcTotal(myCoins)
       }));
     });
   }
@@ -89,6 +86,15 @@ class App extends Component {
     };
   }
 
+  calcTotal(coins) {
+    if (coins.length > 0) {
+      return coins.reduce((acc, coin) => ({
+        value: acc.value + coin.value
+      })).value;
+    }
+    return 0
+  }
+
   handleCoinAdd = (coinSymbol, amount) => {
     this.setState((prevState, props) => {
       // Remove the coin that is about to be added from the available coins to
@@ -106,8 +112,6 @@ class App extends Component {
 
       const newMyCoins = [...prevState.myCoins, coin];
 
-      const total = newMyCoins.reduce((acc, coin) => acc + coin.value);
-
       // Append the the new coin to the url, so that users can bookmark the
       // site and retrieve and thus save/bookmark the settings.
       setUrlParam(coin.queryParam, amount);
@@ -117,28 +121,24 @@ class App extends Component {
       return {
         myCoins: newMyCoins,
         coinsAvailable: coinsAvailable,
-        total: prevState.total + coin.value
+        total: this.calcTotal(newMyCoins)
       }
     });
   };
 
   handleCoinRemove = (coinToRemove) => {
     this.setState((prevState, props) => {
-      const myCoins = prevState.myCoins.filter((coin) => coin.symbol != coinToRemove.symbol);
+      const myCoins = prevState.myCoins.filter((coin) => coin.symbol !== coinToRemove.symbol);
 
       const coinAvailable = {
         symbol: coinToRemove.symbol,
         name: coinToRemove.name
       };
 
-      const total = myCoins.length > 1 ?
-        myCoins.reduce((acc, coin) => ({value: acc.value + coin.value})) :
-        {value: 0};
-
       return {
         myCoins: myCoins,
         coinsAvailable: [...prevState.coinsAvailable, coinAvailable],
-        total: total.value
+        total: this.calcTotal(myCoins)
       }
     });
   };
