@@ -46,6 +46,12 @@ export function getParam(key) {
 export function setUrlParam(key, value) {
   const url = new URL(window.location);
   let params = new URLSearchParams(url.search);
-  params.append(key, value);
+
+  if (params.has(key)) {
+    params.set(key, value);
+  } else {
+    params.append(key, value);
+  }
+  
   window.history.replaceState('', '', `?${params.toString()}`);
 }
