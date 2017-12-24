@@ -27,6 +27,10 @@ class App extends Component {
       }));
       let myCoins = [];
 
+      const currency = this.props.defaultCurrency ? this.props.defaultCurrency
+        : this.state.currency;
+      console.log(currency);
+
       // Add all the coins added via props and remove them from the available
       // coins list.
       this.props.defaultCoins.forEach((amount, key) => {
@@ -37,7 +41,7 @@ class App extends Component {
           const coin = this.prepareCoinToAdd(
             data[symbol],
             amount,
-            this.state.currency
+            currency
           );
           myCoins.push(coin);
         }
@@ -47,7 +51,8 @@ class App extends Component {
         coins: data,
         coinsAvailable: coinList,
         myCoins: myCoins,
-        total: this.calcTotal(myCoins)
+        total: this.calcTotal(myCoins),
+        currency: currency
       }));
     });
   }
@@ -153,6 +158,8 @@ class App extends Component {
       const myCoins = prevState.myCoins.map((coin) => {
         return this.prepareCoinToAdd(coin, coin.amount, currency);
       });
+
+      setUrlParam('currency', currency);
 
       return {
         myCoins: myCoins,
