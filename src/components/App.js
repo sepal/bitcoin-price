@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import NumberFormat from 'react-number-format';
-import {setUrlParam} from '../utility/url_settings'
+import {setUrlParam, removeUrlParam} from '../utility/url_settings'
 import './App.css';
 import {fetchCurrencies} from '../api';
 import AddCoin from './AddCoin';
@@ -144,6 +144,8 @@ class App extends Component {
         symbol: coinToRemove.symbol,
         name: coinToRemove.name
       };
+
+      removeUrlParam(coinToRemove.queryParam);
 
       return {
         myCoins: myCoins,

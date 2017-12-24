@@ -44,14 +44,20 @@ export function getParam(key) {
  * Sets a new key with a value into the current url parameters.
  */
 export function setUrlParam(key, value) {
-  const url = new URL(window.location);
-  let params = new URLSearchParams(url.search);
+  let params = getUrlParams();
 
   if (params.has(key)) {
     params.set(key, value);
   } else {
     params.append(key, value);
   }
-  
+
+  window.history.replaceState('', '', `?${params.toString()}`);
+}
+
+export function removeUrlParam(key) {
+  let params = getUrlParams();
+
+  params.delete(key);
   window.history.replaceState('', '', `?${params.toString()}`);
 }
