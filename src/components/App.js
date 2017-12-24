@@ -5,6 +5,7 @@ import './App.css';
 import {fetchCurrencies} from '../api';
 import AddCoin from './AddCoin';
 import CoinList from './CoinList';
+import CurrencySelector from './CurrencySelector';
 
 class App extends Component {
   state = {
@@ -13,6 +14,7 @@ class App extends Component {
     myCoins: [],
     currency: 'eur',
     total: 0,
+    currencies: ['eur', 'usd']
   };
 
   componentDidMount() {
@@ -61,6 +63,9 @@ class App extends Component {
 
     return (
       <div className="App">
+        <CurrencySelector currencies={this.state.currencies}
+                          defaultValue={this.state.currency}
+                          onChange={this.handleCurrencySelect}/>
         <AddCoin coins={this.state.coinsAvailable}
                  onChange={this.handleCoinAdd} />
         <CoinList coins={this.state.myCoins} currency={this.state.currency}
@@ -139,9 +144,23 @@ class App extends Component {
         myCoins: myCoins,
         coinsAvailable: [...prevState.coinsAvailable, coinAvailable],
         total: this.calcTotal(myCoins)
-      }
+      };
     });
   };
+
+  handleCurrencySelect = (currency) => {
+    this.setState((prevState, props) => {
+      const myCoins = prevState.myCoins.map((coin) => {
+        return this.prepareCoinToAdd(coin, coin.amount, currency);
+      });
+
+      return {
+        myCoins: myCoins,
+        currency: currency,
+        total: this.calcTotal(myCoins)
+      };
+    });
+  }
 }
 
 export default App;

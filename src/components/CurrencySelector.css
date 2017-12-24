@@ -1,0 +1,9 @@
+.currency-selector {
+  list-style: none;
+  padding: 0;
+  display: flex;
+}
+
+.currency-selector__currency {
+  padding-right: 1.5rem;
+}
